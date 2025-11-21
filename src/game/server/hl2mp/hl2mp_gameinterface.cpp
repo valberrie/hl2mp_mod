@@ -19,6 +19,13 @@
 
 void CServerGameClients::GetPlayerLimits( int& minplayers, int& maxplayers, int &defaultMaxPlayers ) const
 {
+	ConVarRef lnbd{"cl_localnetworkbackdoor"};
+
+	if (lnbd.GetBool())
+    {
+        Warning( "cl_localnetworkbackdoor is enabled. You *will* crash when attempting to play a singleplayer game (if maxplayers == 1).\n" );
+	}
+	
 	minplayers = 2;
 #ifdef PLATFORM_64BITS
 	maxplayers = MAX_PLAYERS;
