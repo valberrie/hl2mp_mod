@@ -1,0 +1,39 @@
+//-----------------------------------------------------------------------------
+//	HAMMER_LAUNCHER.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Macro SRCDIR		"..\.."
+$Macro OUTBINDIR	"$SRCDIR\..\game\bin"
+$Macro OUTBINNAME	"hammer"
+
+$Include "$SRCDIR\vpc_scripts\source_exe_base.vpc"
+
+$Configuration
+{
+	$Linker [$WIN32]
+	{
+		$EnableLargeAddresses				"Support Addresses Larger Than 2 Gigabytes (/LARGEADDRESSAWARE)"
+	}
+}
+
+$Project "Hammer (Launcher)"
+{
+	$Folder	"Source Files"
+	{
+		-$File	"$SRCDIR\public\tier0\memoverride.cpp"
+		
+		$File	"main.cpp"
+	}
+
+	$Folder	"Header Files"
+	{
+		$File	"$SRCDIR\public\IHammer.h"
+	}
+
+	$Folder "Link Libraries"
+	{
+		$Lib appframework
+	}
+}

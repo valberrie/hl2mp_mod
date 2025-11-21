@@ -1,0 +1,50 @@
+//-----------------------------------------------------------------------------
+//	HAMMER_DLL.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Macro SRCDIR		"..\.."
+$Macro OUTBINDIR	"$SRCDIR\..\game\bin"
+$Macro OUTBINNAME	"hammer"
+
+$Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
+
+$Configuration
+{
+	$Compiler
+	{
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\engine;$SRCDIR\game\shared;$SRCDIR\utils\common"
+		$PreprocessorDefinitions			"$BASE;VALVE;PROTECTED_THINGS_DISABLE;VERSION_SAFE_STEAM_API_INTERFACES;NO_WARN_MBCS_MFC_DEPRECATION;NO_MEMOVERRIDE_NEW_DELETE"
+		$AdditionalOptions					"$BASE /EHa"
+	}
+}
+
+$Project "Hammer"
+{
+	$Folder	"Source Files"
+	{
+		-$File	"$SRCDIR\public\tier0\memoverride.cpp"
+
+		$File	"hammer.cpp"
+		$File 	"hammer.h"
+	}
+
+	$Folder	"Link Libraries"
+	{		
+		$Lib bitmap
+		$Lib choreoobjects
+		$Lib dmxloader
+		$Lib fgdlib
+		$Lib $LIBCOMMON\jpeglib
+		$Lib mathlib
+		$Lib matsys_controls
+		$Lib raytrace
+		$Lib tier2
+		$Lib tier3
+		$Lib vgui_controls
+
+		$ImpLibexternal steam_api	[!$WIN64]
+		$ImpLibexternal steam_api64	[$WIN64]
+	}
+}

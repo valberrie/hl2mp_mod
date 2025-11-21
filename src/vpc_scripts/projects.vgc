@@ -150,3 +150,12 @@ $Project "vvis_launcher"
 	"utils\vvis_launcher\vvis_launcher.vpc" [$WINDOWS]
 }
 
+$Project "hammer_launcher"
+{
+	"utils\hammer_launcher\hammer_launcher.vpc"
+}
+
+$Project "hammer"
+{
+	"utils\hammer\hammer.vpc"
+}
