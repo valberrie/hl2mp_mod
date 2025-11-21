@@ -152,10 +152,10 @@ $Project "vvis_launcher"
 
 $Project "hammer_launcher"
 {
-	"utils\hammer_launcher\hammer_launcher.vpc"
+	"utils\hammer_launcher\hammer_launcher.vpc" [$WINDOWS]
 }
 
 $Project "hammer"
 {
-	"utils\hammer\hammer.vpc"
+	"utils\hammer\hammer.vpc" [$WINDOWS]
 }
