@@ -510,3 +510,17 @@ FodyWeavers.xsd
 /game/mod_hl2mp/voice_ban.dt
 /game/mod_hl2mp_win64.exe
 /game/mod_tf_win64.exe
+
+# temporary just so we don't commit leaked code lmao
+/src/hammer/*.cpp
+/src/hammer/*.h
+/src/hammer_launcher/*.cpp
+/src/hammer_launcher/*.h
+/src/lib/public/linux64
+/src/.ninja_deps
+/src/.ninja_log
+/src/compile_commands.json
+/src/utils/hammer/hammer.cpp
+/src/utils/hammer/hammer.h
+/src/utils/hammer_launcher/main.cpp
+/src/launcher_main/steam_appid.txt
