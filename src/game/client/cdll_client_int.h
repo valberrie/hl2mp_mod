@@ -60,6 +60,10 @@ class IEngineClientReplay;
 class IReplayScreenshotManager;
 class CSteamID;
 
+#if defined( USE_HAMMER )
+class IHammer;
+#endif
+
 //=============================================================================
 // HPE_BEGIN
 // [dwenger] Necessary for stats display
@@ -110,6 +114,10 @@ extern IReplayManager *g_pReplayManager;
 extern IReplayScreenshotManager *g_pReplayScreenshotManager;
 extern IEngineReplay *g_pEngineReplay;
 extern IEngineClientReplay *g_pEngineClientReplay;
+
+#if defined( USE_HAMMER )
+extern IHammer *g_pHammer;
+#endif
 
 //=============================================================================
 // HPE_BEGIN

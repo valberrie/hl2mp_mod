@@ -219,6 +219,10 @@ IEngineClientReplay *g_pEngineClientReplay = NULL;
 IReplaySystem *g_pReplay = NULL;
 #endif
 
+#if defined( USE_HAMMER )
+IHammer *g_pHammer = nullptr;
+#endif
+
 IHaptics* haptics = NULL;// NVNT haptics system interface singleton
 
 //=============================================================================
