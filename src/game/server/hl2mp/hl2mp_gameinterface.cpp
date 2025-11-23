@@ -26,7 +26,7 @@ void CServerGameClients::GetPlayerLimits( int& minplayers, int& maxplayers, int 
         Warning( "cl_localnetworkbackdoor is enabled. You *will* crash when attempting to play a singleplayer game (if maxplayers == 1).\n" );
 	}
 	
-	minplayers = 2;
+	minplayers = 1;
 #ifdef PLATFORM_64BITS
 	maxplayers = MAX_PLAYERS;
 #else

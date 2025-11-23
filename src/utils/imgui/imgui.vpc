@@ -1,0 +1,45 @@
+$MacroRequired SRCDIR ..\..
+
+$Include "$SRCDIR\vpc_scripts\source_lib_base.vpc"
+$Include "$SRCDIR\vpc_scripts\platform_dirs.vpc"
+
+
+$MacroRequired OUTLIBDIR	"$SRCDIR\lib\public$PLATSUBDIR"
+
+$Configuration
+{
+	$Compiler
+	{
+		$AdditionalIncludeDirectories	"$BASE,$SRCDIR\utils\imgui,$SRCDIR\thirdparty\imgui"
+	}
+}
+
+$Project "ImGui"
+{
+
+    $Folder "Source Files"
+    {
+    	$File "$SRCDIR\thirdparty\imgui\imgui.cpp"
+    	$File "$SRCDIR\thirdparty\imgui\imgui.h"
+    	$File "$SRCDIR\thirdparty\imgui\imgui_internal.h"
+    	$File "$SRCDIR\thirdparty\imgui\imconfig.h"
+    	$File "$SRCDIR\thirdparty\imgui\imgui_demo.cpp"
+    	$File "$SRCDIR\thirdparty\imgui\imgui_draw.cpp"
+    	$File "$SRCDIR\thirdparty\imgui\imgui_tables.cpp"
+    	$File "$SRCDIR\thirdparty\imgui\imgui_widgets.cpp"
+
+    	$File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_win32.cpp" [$WINDOWS]
+    	$File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_win32.h" [$WINDOWS]
+    	// $File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_dx9.cpp" [$WINDOWS]
+    	// $File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_dx9.h" [$WINDOWS]
+
+    	$File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_sdl2.cpp" [!$WINDOWS]
+    	$File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_sdl2.h" [!$WINDOWS]
+
+    	$File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_opengl3.cpp"
+    	$File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_opengl3.h"
+
+       	// $File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_vulkan.cpp"
+       	// $File "$SRCDIR\thirdparty\imgui\backends\imgui_impl_vulkan.h"
+    }
+}

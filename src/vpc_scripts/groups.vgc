@@ -12,6 +12,7 @@ $Group "gamedlls"
 {
 	"client"
 	"server"
+	"imgui"
 }
 
 $Group "game"
@@ -24,6 +25,7 @@ $Group "game"
 	"server"
 	"tier1"
 	"vgui_controls"
+	"imgui"
 }
 
 $Group "shaders"
@@ -68,6 +70,8 @@ $Group "everything"
 	
 	"hammer_launcher"
 	"hammer"
+
+	"imgui"
 }
 
 $Group "dedicated"

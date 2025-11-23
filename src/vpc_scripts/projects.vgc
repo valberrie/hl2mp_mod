@@ -159,3 +159,8 @@ $Project "hammer"
 {
 	"utils\hammer\hammer.vpc" [$WINDOWS]
 }
+
+$Project "imgui"
+{
+	"utils\imgui\imgui.vpc"
+}

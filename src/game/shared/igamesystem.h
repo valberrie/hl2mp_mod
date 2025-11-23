@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================//
 
+#include "platform.h"
+
 #ifndef IGAMESYSTEM_H
 #define IGAMESYSTEM_H
 #ifdef _WIN32
