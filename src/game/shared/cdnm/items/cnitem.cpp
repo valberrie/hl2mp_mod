@@ -9,7 +9,7 @@
 #include "tier0/memdbgon.h"
 
 #define ITEM_SCRIPT_FILE_EXT "vkv"
-#define ITEM_SCRIPT_DIR "scripts/cn"
+#define ITEM_SCRIPT_DIR "scripts/cn/items"
 #define ITEM_SCRIPT_MANIFEST_NAME ITEM_SCRIPT_DIR "/item_manifest." ITEM_SCRIPT_FILE_EXT
 
 CnItemInfo_t &CnItemInfo_t::LazyLoad( const char *pszClassName )
