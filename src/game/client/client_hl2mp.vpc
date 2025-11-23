@@ -14,8 +14,13 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;hl2mp\ui,.\hl2mp,$SRCDIR\game\shared\hl2mp,.\hl2,.\hl2\elements,$SRCDIR\game\shared\hl2"
-		$PreprocessorDefinitions			"$BASE;HL2MP;HL2_CLIENT_DLL;NEXT_BOT"
+		$AdditionalIncludeDirectories		"$BASE;hl2mp\ui,.\hl2mp,$SRCDIR\game\shared\hl2mp,.\hl2,.\hl2\elements,$SRCDIR\game\shared\hl2,$SRCDIR\thirdparty\imgui"
+		$PreprocessorDefinitions			"$BASE;HL2MP;HL2_CLIENT_DLL;NEXT_BOT;USE_IMGUI"
+	}
+
+	$Linker
+	{
+		$AdditionalDependencies				"opengl32.lib"
 	}
 }
 
@@ -175,6 +180,17 @@ $Project "Client (HL2MP)"
 				$File	"hl2mp\ui\hl2mptextwindow.h"
 				$File	"hl2mp\hud_deathnotice.cpp"
 			}
+		}
+
+		$Folder "ImGui"
+		{
+			$File "imgui\imgui_system.cpp"
+			$File "imgui\imgui_system.h"
+		}
+
+		$Folder "Link Libraries"
+		{
+			$ImpLibexternal imgui
 		}
 	}
 }

@@ -175,6 +175,7 @@ extern vgui::IInputInternal *g_InputInternal;
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#include <imgui/imgui_system.h>
 
 extern IClientMode *GetClientModeNormal();
 
@@ -1032,6 +1033,10 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	IGameSystem::Add( PerfVisualBenchmark() );
 	IGameSystem::Add( MumbleSystem() );
 	IGameSystem::Add( SteamShareSystem() );
+
+#if defined( USE_IMGUI )
+	IGameSystem::Add( ImGuiSystem() );
+#endif
 
 	#if defined( TF_CLIENT_DLL )
 	IGameSystem::Add( CustomTextureToolCacheGameSystem() );
