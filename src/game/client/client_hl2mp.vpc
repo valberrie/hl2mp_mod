@@ -184,6 +184,18 @@ $Project "Client (HL2MP)"
 			$File "imgui\imgui_system.h"
 		}
 
+		$Folder "Codename"
+		{
+			$Folder "Shared"
+			{
+				$Folder "Weapons"
+				{
+					$File "$SRCDIR\game\shared\cdnm\weapons\weapon_throwable.cpp"
+					$File "$SRCDIR\game\shared\cdnm\weapons\weapon_throwable.h"
+				}
+			}
+		}
+
 		$Folder "Link Libraries"
 		{
 			$ImpLibexternal imgui
