@@ -89,7 +89,7 @@ bool CImGuiSystem::Init()
     //    return false;
     //}
 
-    //return true;
+    return true;
 }
 
 void CImGuiSystem::PostInit()
