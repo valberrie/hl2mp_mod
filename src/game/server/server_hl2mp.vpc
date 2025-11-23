@@ -431,6 +431,12 @@ $Project "Server (HL2MP)"
 					$File "$SRCDIR\game\shared\cdnm\weapons\weapon_throwable.cpp"
 					$File "$SRCDIR\game\shared\cdnm\weapons\weapon_throwable.h"
 				}
+					
+				$Folder "Items"
+				{
+					$File "$SRCDIR\game\shared\cdnm\items\cnitem.cpp"
+					$File "$SRCDIR\game\shared\cdnm\items\cnitem.h"
+				}
 			}
 		}
 	}
