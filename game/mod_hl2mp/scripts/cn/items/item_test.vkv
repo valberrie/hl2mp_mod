@@ -1,0 +1,7 @@
+ItemInfo
+{
+    "PrintName"     "Test Item"
+    "MaxStack"      "9999"
+    "Stackable"     "true"
+    "Equipable"     "true"
+}
