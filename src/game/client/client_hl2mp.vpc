@@ -18,10 +18,6 @@ $Configuration
 		$PreprocessorDefinitions			"$BASE;HL2MP;HL2_CLIENT_DLL;NEXT_BOT;USE_IMGUI"
 	}
 
-	$Linker
-	{
-		$AdditionalDependencies				"opengl32.lib"
-	}
 }
 
 $Project "Client (HL2MP)"
