@@ -1,5 +1,7 @@
 // valberrie 2025.11.22
 
+#pragma once
+
 #ifdef GAME_DLL
     #include "baseanimating.h"
 #endif
