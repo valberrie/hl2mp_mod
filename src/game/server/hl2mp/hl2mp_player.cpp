@@ -96,6 +96,8 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 
 //	SendPropExclude( "DT_ServerAnimationData" , "m_flCycle" ),	
 //	SendPropExclude( "DT_AnimTimeMustBeFirst" , "m_flAnimTime" ),	
+
+	SendPropEHandle( SENDINFO( m_hInventory ) ),
 END_SEND_TABLE()
 
 BEGIN_DATADESC( CHL2MP_Player )
@@ -157,6 +159,7 @@ CHL2MP_Player::CHL2MP_Player() : m_PlayerAnimState( this )
 	BaseClass::ChangeTeam( 0 );
 	
 	//UseClientSideAnimation();
+    m_hInventory = CREATE_ENTITY( CCnInventory, "cn_inventory" );
 }
 
 CHL2MP_Player::~CHL2MP_Player( void )
@@ -275,6 +278,10 @@ void CHL2MP_Player::GiveDefaultItems( void )
 	{
 		Weapon_Switch( Weapon_OwnsThisType( "weapon_physcannon" ) );
 	}
+
+	auto nID = m_hInventory->AddItem( "item_test" );
+    auto &Info = m_hInventory->GetItem( nID );
+    Msg( "Item: {\nClassName: '%s'\nPrettyName: '%s'\nMaxStack: %ul\nFlags: %d\n}\n", Info.szClassName, Info.szPrettyName, Info.nMaxStack, Info.eFlags );
 }
 
 void CHL2MP_Player::PickDefaultSpawnTeam( void )
@@ -376,6 +383,9 @@ void CHL2MP_Player::Spawn(void)
 	SetPlayerUnderwater(false);
 
 	m_bReady = false;
+
+    m_hInventory->SetOwner( this );
+    m_hInventory->ClearItems();
 }
 
 bool CHL2MP_Player::ValidatePlayerModel( const char *pModel )
@@ -404,7 +414,7 @@ bool CHL2MP_Player::ValidatePlayerModel( const char *pModel )
 	return false;
 }
 
-ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "0", FCVAR_GAMEDLL );
+ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "1", FCVAR_GAMEDLL );
 
 void CHL2MP_Player::PickupObject( CBaseEntity* pObject, bool bLimitMassAndSize )
 {

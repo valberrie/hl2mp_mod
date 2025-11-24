@@ -7,25 +7,47 @@
 #include "cnitem.h"
 
 #include "tier0/memdbgon.h"
+#include "vscript/variant.h"
 
 #define ITEM_SCRIPT_FILE_EXT "vkv"
 #define ITEM_SCRIPT_DIR "scripts/cn/items"
 #define ITEM_SCRIPT_MANIFEST_NAME ITEM_SCRIPT_DIR "/item_manifest." ITEM_SCRIPT_FILE_EXT
 
-CnItemInfo_t &CnItemInfo_t::LazyLoad( const char *pszClassName )
+CnItemInfo_t *CnItemInfo_t::GetFromDatabase( const char *pszClassName )
 {
     if ( !s_Database.HasElement( pszClassName ) )
     {
-        Assert( CreateDatabase() );
+        if ( !s_bDatabaseCreated )
+        {
+            Assert( CreateDatabase() );
+        }
+
+        if ( !s_Database.HasElement( pszClassName ) )
+        {
+            // it really isn't
+            return nullptr;
+        }
     }
+
 
     IndexType_t nIndex = s_Database.Find( pszClassName );
     Assert( nIndex != s_Database.InvalidIndex() );
-    return s_Database.Element( nIndex );
+    return &(s_Database.Element( nIndex ));
 }
 
 bool CnItemInfo_t::CreateDatabase() 
 {
+    if ( s_bDatabaseCreated )
+    {
+        return false;
+    }
+
+    // Replaced with CUtlDict
+    //
+    // CUtlMap causes a crash if we don't set this
+    // see https://developer.valvesoftware.com/wiki/CUtlMap
+    // SetDefLessFunc( s_Database );
+    
     KeyValues *pManifest = new KeyValues( "ItemManifest" );
     if ( !pManifest->LoadFromFile( filesystem, ITEM_SCRIPT_MANIFEST_NAME, "GAME" ) )
     {
@@ -43,8 +65,14 @@ bool CnItemInfo_t::CreateDatabase()
             return false;
         }
 
+        // store the name
         const char *pszName = sub->GetString();
+        int iName = V_strlen( pszName );
         Assert( pszName != nullptr );
+        Assert( pszName[iName] == '\0' );
+
+        // CUtlDict does this for us
+        //s_StringStorage.AddMultipleToTail(iName, pszName);
         
         Assert( !s_Database.HasElement(pszName) );
 
@@ -68,6 +96,7 @@ bool CnItemInfo_t::CreateDatabase()
     }
 
     pManifest->deleteThis();
+    s_bDatabaseCreated = true;
     return true;
 }
 
@@ -122,7 +151,17 @@ CnItemInfo_t CnItemInfo_t::ParseInfoFile( const char *pszName, KeyValues *pDataF
     return outInfo;
 }
 
-CUtlMap< const char *, CnItemInfo_t, CnItemInfo_t::IndexType_t > CnItemInfo_t::s_Database{};
+CUtlDict<CnItemInfo_t, CnItemInfo_t::IndexType_t > CnItemInfo_t::s_Database{};
+bool CnItemInfo_t::s_bDatabaseCreated = false;
+
+CnItemInfo_t::CnItemInfo_t()
+{
+    m_bInitialized = false;
+    memset( szClassName, 0, sizeof( szClassName ) );
+    memset( szPrettyName, 0, sizeof( szPrettyName ) );
+    nMaxStack = 0;
+    eFlags = CN_ITEM_FLAGS_NONE;
+}
 
 
 
@@ -136,8 +175,7 @@ BEGIN_NETWORK_TABLE( CCnInventory, DT_CnInventory )
     RecvPropInt( RECVINFO( m_nNextValidID ) ),
 #else
     SendPropEHandle( SENDINFO( m_hOwner ) ),
-    SendPropInt( SENDINFO( m_nNextValidID ), 32, SPROP_UNSIGNED ),
-    
+    SendPropInt( SENDINFO( m_nNextValidID ) ),
 #endif
 END_NETWORK_TABLE()
 
@@ -148,10 +186,20 @@ END_NETWORK_TABLE()
 LINK_ENTITY_TO_CLASS( cn_inventory, CCnInventory );
 PRECACHE_REGISTER( cn_inventory );
 
+#ifndef CLIENT_DLL
+    BEGIN_DATADESC( CCnInventory )
+        DEFINE_FIELD( m_hOwner, FIELD_EHANDLE ),
+        DEFINE_FIELD( m_nNextValidID, (fieldtype_t)FIELD_UINT ),
+    END_DATADESC()
+#endif
+
 // clang-format on
 
 CCnInventory::CCnInventory()
 {
+    // CUtlMap causes a crash if we don't set this
+    // see https://developer.valvesoftware.com/wiki/CUtlMap
+    SetDefLessFunc( m_Items );
 }
 
 CCnInventory::~CCnInventory()
@@ -161,6 +209,8 @@ CCnInventory::~CCnInventory()
 void CCnInventory::Spawn()
 {
     BaseClass::Spawn();
+    CnItemInfo_t::CreateDatabase();
+
     Precache();
 }
 
@@ -193,12 +243,19 @@ const CUtlVector< CnInventoryItemID_t > &CCnInventory::GetAllItems() const
     return Items;
 }
 
-CnInventoryItemID_t CCnInventory::AddItem( CnItemInfo_t &&Info )
+CnInventoryItemID_t CCnInventory::AddItem( CnItemInfo_t Info )
 {
-    CnInventoryItemID_t nID = m_nNextValidID++;
-    Assert( !IsValidID( nID ) );
-    m_Items.Insert( nID, Info );
-    return nID;
+    CnInventoryItemID_t nIndex = m_nNextValidID++;
+    Assert( !IsValidID( nIndex ) );
+    m_Items.Insert( nIndex, Info );
+    return nIndex;
+}
+
+CnInventoryItemID_t CCnInventory::AddItem( const char *pszClassName )
+{
+    auto *pInfo = CnItemInfo_t::GetFromDatabase( pszClassName );
+    Assert( pInfo != nullptr );
+    return AddItem( *pInfo );
 }
 
 bool CCnInventory::RemoveItem( CnInventoryItemID_t nID )

@@ -16,9 +16,10 @@ enum CnItemFlags_t : uint8_t
 class CnItemInfo_t
 {
 public:
-    static CnItemInfo_t &LazyLoad( const char *pszClassName );
+    static bool CreateDatabase();
+    static CnItemInfo_t *GetFromDatabase( const char *pszClassName );
 
-    CnItemInfo_t() = default;
+    CnItemInfo_t();
 
     char szClassName[CN_ITEM_STRING_LENGTH]; // The entity to spawn when this item is equipped (typically a CWeaponSomething)
     char szPrettyName[CN_ITEM_STRING_LENGTH]; // The name to display
@@ -28,10 +29,11 @@ public:
 private:
     typedef size_t IndexType_t;
 
-    static bool CreateDatabase();
     static CnItemInfo_t ParseInfoFile( const char *pszName, KeyValues *pDataFile );
     
-    static CUtlMap< const char *, CnItemInfo_t, IndexType_t > s_Database;
+    static CUtlDict< CnItemInfo_t, IndexType_t > s_Database;
+    //static CUtlVector<char> s_StringStorage; // We don't need this when we use CUtlDict
+    static bool s_bDatabaseCreated;
 
     bool m_bInitialized{ false };
 };
@@ -61,6 +63,8 @@ public:
 
     inline bool IsValidID( CnInventoryItemID_t nID ) const { return m_Items.HasElement( nID ) && m_Items.IsValidIndex( GetIndexFromID( nID ) ); }
 
+    inline void ClearItems() { m_Items.RemoveAll(); }
+
     // NOTE: Do not store a reference given to you by this function!
     //       Items' underlying storage will resize at any time.
     const CnItemInfo_t &GetItem( CnInventoryItemID_t nID ) const;
@@ -68,12 +72,19 @@ public:
     // NOTE: This is safe to store.
     const CUtlVector< CnInventoryItemID_t > &GetAllItems() const;
     
-    CnInventoryItemID_t AddItem( CnItemInfo_t &&Info );
+    CnInventoryItemID_t AddItem( const char *pszClassName );
+    CnInventoryItemID_t AddItem( CnItemInfo_t Info );
 
     bool RemoveItem( CnInventoryItemID_t nID );
 
+    inline void SetOwner( CBaseEntity *pEnt ) { m_hOwner = pEnt; }
+
     CNetworkHandle( CBaseEntity, m_hOwner );
     CNetworkVar( CnInventoryItemID_t, m_nNextValidID );
+
+#ifndef CLIENT_DLL
+    DECLARE_DATADESC();
+#endif
 
 private:
     typedef uint32_t IndexType_t;

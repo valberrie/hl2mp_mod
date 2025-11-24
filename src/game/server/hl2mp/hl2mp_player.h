@@ -19,6 +19,7 @@ class CHL2MP_Player;
 #include "hl2mp_player_shared.h"
 #include "hl2mp_gamerules.h"
 #include "utldict.h"
+#include "cdnm/items/cnitem.h"
 
 //=============================================================================
 // >> HL2MP_Player
@@ -168,6 +169,8 @@ private:
 
     bool m_bEnterObserver;
 	bool m_bReady;
+
+	CNetworkHandle( CCnInventory, m_hInventory );
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

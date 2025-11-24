@@ -55,6 +55,8 @@ IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
 	RecvPropInt( RECVINFO( m_iPlayerSoundType) ),
 
 	RecvPropBool( RECVINFO( m_fIsWalking ) ),
+
+	RecvPropEHandle( RECVINFO( m_hInventory ) ),
 END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA( C_HL2MP_Player )

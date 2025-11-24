@@ -13,6 +13,7 @@ class C_HL2MP_Player;
 #include "c_basehlplayer.h"
 #include "hl2mp_player_shared.h"
 #include "beamdraw.h"
+#include "cdnm/items/cnitem.h"
 
 //=============================================================================
 //=============================================================================
@@ -161,6 +162,8 @@ private:
 	CNetworkVar( HL2MPPlayerState, m_iPlayerState );	
 
 	bool m_fIsWalking = false;
+
+	CCnInventory *m_hInventory;
 };
 
 inline C_HL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )
