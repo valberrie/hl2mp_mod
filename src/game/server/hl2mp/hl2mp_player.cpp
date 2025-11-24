@@ -55,6 +55,7 @@ BEGIN_SEND_TABLE_NOBASE( CHL2MP_Player, DT_HL2MPLocalPlayerExclusive )
 	SendPropFloat( SENDINFO_VECTORELEM(m_angEyeAngles, 0), 8, SPROP_CHANGES_OFTEN, -90.0f, 90.0f ),
 	SendPropAngle( SENDINFO_VECTORELEM(m_angEyeAngles, 1), 10, SPROP_CHANGES_OFTEN ),
 
+	SendPropEHandle( SENDINFO( m_hInteractHintEnt ) ),
 END_SEND_TABLE()
 
 // all players except the local player
@@ -637,6 +638,8 @@ void CHL2MP_Player::PostThink( void )
 	QAngle angles = GetLocalAngles();
 	angles[PITCH] = 0;
 	SetLocalAngles( angles );
+
+	CheckForHoveredEnts();
 }
 
 void CHL2MP_Player::PlayerDeathThink()
@@ -1754,4 +1757,33 @@ bool CHL2MP_Player::IsThreatFiringAtMe( CBaseEntity* threat ) const
 	}
 
 	return false;
+}
+
+ConVar cn_interact_hint_trace_length{ "cn_interact_hint_trace_length", "100.0", FCVAR_NONE };
+
+// val: for CHudInteractHint
+void CHL2MP_Player::CheckForHoveredEnts()
+{
+    // calculate position
+    Vector vecDir{};
+    AngleVectors( EyeAngles(), &vecDir );
+    Vector vecAbsStart = EyePosition();
+    Vector vecAbsEnd = vecAbsStart + ( vecDir * cn_interact_hint_trace_length.GetFloat() );
+
+    trace_t tr{};
+    UTIL_TraceLine( vecAbsStart, vecAbsEnd, MASK_ALL, this, COLLISION_GROUP_NONE, &tr );
+
+	if ( tr.m_pEnt == nullptr || !tr.DidHitNonWorldEntity() )
+    {
+		m_hInteractHintEnt = nullptr;
+		return;
+	}
+
+	m_hInteractHintEnt = tr.m_pEnt;
+	// TODO(val): a better way to do this
+  //  if ( tr.m_pEnt->m_pfnUse != nullptr )
+  //  {
+		//// ent can be used
+		//m_hInteractHintEnt = tr.m_pEnt;
+  //  }
 }

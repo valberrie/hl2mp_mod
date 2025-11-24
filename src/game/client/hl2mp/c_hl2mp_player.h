@@ -121,6 +121,8 @@ public:
 
 	virtual void PostThink( void );
 
+	void CheckForHoveredEnts();
+
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );
@@ -164,6 +166,9 @@ private:
 	bool m_fIsWalking = false;
 
 	CCnInventory *m_hInventory;
+
+	EHANDLE m_hInteractHintEnt;
+	EHANDLE m_hLastInteractHintEnt;
 };
 
 inline C_HL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

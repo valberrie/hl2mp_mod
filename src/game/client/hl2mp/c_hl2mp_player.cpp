@@ -15,6 +15,12 @@
 #include "r_efx.h"
 #include "dlight.h"
 
+#ifdef CDNM
+	#include <cdnm/hud_interact.h>
+	#include "cdnm/items/cnitem.h"
+	#include "hud_element_helper.h"
+#endif
+
 // Don't alias here
 #if defined( CHL2MP_Player )
 #undef CHL2MP_Player	
@@ -35,6 +41,8 @@ BEGIN_RECV_TABLE_NOBASE( C_HL2MP_Player, DT_HL2MPLocalPlayerExclusive )
 
 	RecvPropFloat( RECVINFO( m_angEyeAngles[0] ) ),
 	RecvPropFloat( RECVINFO( m_angEyeAngles[1] ) ),
+
+	RecvPropEHandle( RECVINFO( m_hInteractHintEnt ) ),
 END_RECV_TABLE()
 
 // all players except the local player
@@ -69,6 +77,8 @@ BEGIN_PREDICTION_DATA( C_HL2MP_Player )
 	// with just altfire ammo, and get new ammo and we force reload. But the additional pred error sorts that out itself
 	// without this for every pickup which is 1000% more common.
 	DEFINE_PRED_ARRAY( m_iAmmo, FIELD_INTEGER, MAX_AMMO_TYPES, FTYPEDESC_INSENDTABLE | FTYPEDESC_OVERRIDE | FTYPEDESC_NOERRORCHECK ),
+	
+	//DEFINE_PRED_FIELD( m_hInteractHintEnt, FIELD_EHANDLE, FTYPEDESC_INSENDTABLE ),
 END_PREDICTION_DATA()
 
 ConVar hl2_walkspeed( "hl2_walkspeed", "150", FCVAR_REPLICATED );
@@ -214,6 +224,8 @@ void C_HL2MP_Player::Initialize( void )
 	{
 		SetPoseParameter( hdr, i, 0.0 );
 	}
+
+	SetNextClientThink( CLIENT_THINK_ALWAYS );
 }
 
 CStudioHdr *C_HL2MP_Player::OnNewModel( void )
@@ -282,6 +294,8 @@ void C_HL2MP_Player::UpdateLookAt( void )
 
 void C_HL2MP_Player::ClientThink( void )
 {
+	CheckForHoveredEnts();
+
 	bool bFoundViewTarget = false;
 	
 	Vector vForward;
@@ -320,6 +334,7 @@ void C_HL2MP_Player::ClientThink( void )
 	}
 
 	UpdateIDTarget();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1229,4 +1244,42 @@ void C_HL2MP_Player::PostThink( void )
 	{
 		SetCollisionBounds( VEC_CROUCH_TRACE_MIN, VEC_CROUCH_TRACE_MAX );
 	}
+}
+
+void C_HL2MP_Player::CheckForHoveredEnts()
+{
+    CHudInteractHint *pHint = GET_HUDELEMENT( CHudInteractHint );
+	CBaseEntity *pEnt = m_hInteractHintEnt;
+	
+    if ( pEnt == nullptr )
+    {
+        if ( m_hLastInteractHintEnt != nullptr )
+        {
+            pHint->HideHint();
+			m_hLastInteractHintEnt = nullptr;
+		}
+	
+		return;
+	}
+
+
+	if ( m_hLastInteractHintEnt != m_hInteractHintEnt )
+	{
+		auto *pInfo = CnItemInfo_t::GetFromDatabase( pEnt->GetClassname() );
+		const char *pszDisplayName = nullptr;
+		if ( pInfo == nullptr )
+			pszDisplayName = pEnt->GetClassname();
+		else
+			pszDisplayName = pInfo->szPrettyName;
+
+		pHint->ShowHint( pszDisplayName );
+	}
+
+	// TODO(val): find out how to transform 3D coordinates such that a 2D screen space
+	//			  bounding rectangle can be created from an entity's mesh or collision
+	int iX = 0, iY = 0;
+    GetTargetInHudSpace( pEnt, iX, iY, nullptr );
+    pHint->UpdateHint( iX, iY );
+
+	m_hLastInteractHintEnt = m_hInteractHintEnt;
 }

@@ -754,5 +754,14 @@
 		"enabled"		"1"
 		"bgcolor_override"	"0 0 0 0"
 		"PaintBackgroundType"	"0" // rounded corners
-	}	
+	}
+
+	HudInteractHint
+	{
+		"fieldName"		"HudInteractHint"
+		"visible"		"1"
+		"enabled"		"1"
+		"wide"			"640"
+		"tall"			"480"
+	}
 }

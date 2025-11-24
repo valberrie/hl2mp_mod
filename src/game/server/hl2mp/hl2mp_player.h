@@ -144,6 +144,8 @@ public:
 
 	bool IsThreatAimingTowardMe( CBaseEntity* threat, float cosTolerance = 0.8f ) const;
 	bool IsThreatFiringAtMe( CBaseEntity* threat ) const;
+
+	void CheckForHoveredEnts();
 private:
 
 	CNetworkQAngle( m_angEyeAngles );
@@ -171,6 +173,8 @@ private:
 	bool m_bReady;
 
 	CNetworkHandle( CCnInventory, m_hInventory );
+	
+    CNetworkHandle( CBaseEntity, m_hInteractHintEnt );
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )
